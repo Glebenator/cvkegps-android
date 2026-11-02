@@ -1,27 +1,18 @@
-# CVKE GPS
+# CVKE GPS for Android
 
 A native Android speedometer and trip recorder built with Kotlin, Jetpack Compose, and Material 3.
-This work remains local. The existing Git remote was not changed or used for a push.
 
-Open [PROGRESS.html](PROGRESS.html) in a browser for the current status, screenshots,
-code excerpts, verification results, and required and optional future work.
-Update the report with each completed change, as specified in `AGENTS.md`.
+CVKE GPS has three repositories:
 
-## iOS app on 1 November 2026
+- [cvkegps](https://github.com/Glebenator/cvkegps): the product. Decisions (ADRs), the glossary, the shared
+  measurement rules, and the [progress report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html) with the status, screenshots,
+  verification results, and future work.
+- [cvkegps-android](https://github.com/Glebenator/cvkegps-android): this repository, the Android app.
+- [cvkegps-ios](https://github.com/Glebenator/cvkegps-ios): the iOS app. Its decisions and the platform differences
+  are in [ADR 0007](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0007-build-the-ios-app-with-apple-maps-and-a-shared-swift-core.md).
 
-The native iOS app is in [`ios/`](ios/README.md). It uses SwiftUI, Apple Maps, and the Liquid Glass design of iOS 26,
-and keeps the Android measurement rules and product behaviour. The decisions and platform differences are in
-[ADR 0007](docs/adr/0007-build-the-ios-app-with-apple-maps-and-a-shared-swift-core.md).
-
-- **Same rules.** The Swift package `ios/CVKEGPSCore` has the usability rules, route math, activity estimate, GPX,
-  sensor record, speed colours, replay calculations, display format, trip recorder, and an SQLite store with the Room
-  tables. Its tests repeat the Android calculation tests.
-- **Native features.** Apple Maps with glass map controls; the Liquid Glass tab bar with a recording accessory; a Live
-  Activity on the Lock Screen and in the Dynamic Island with Pause, Resume, and Stop; Siri and Shortcuts; a Control Center
-  Start trip button; Swift Charts in the replay; swipe to delete; and dark and tinted app icons.
-- **Not on iOS.** iOS reports no satellites, so the satellite ring, the sky map, and the satellite details are Android
-  only. iOS has no wallpaper colours and Apple Maps has no terrain map. High accuracy gives about one fix each second.
-- **Status.** Not checked on a real iPhone. See [the report](PROGRESS.html#ios-app) for the build and test results.
+Until 2 November 2026, this app was in `Glebenator/cvkegps`, with the iOS app in its `ios/` folder. This repository keeps
+the Android history. Links to the progress report and the ADRs go to the cvkegps repository.
 
 ## Trip recording
 
@@ -62,19 +53,19 @@ unless a trip is recording. Trip Pause stops the recording request.
 Settings > **Trip recording** selects **Standard** (one fix each second) or **High accuracy** (up to 10 fixes each second,
 with the GPS receiver fully on and much more battery use), and turns network positions on or off. The choices apply to the
 next trip that starts or resumes. Each trip also records the phone's accelerometer, orientation, and air pressure sensors
-for later analysis. See [ADR 0003](docs/adr/0003-collect-all-trip-measurements.md).
+for later analysis. See [ADR 0003](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0003-collect-all-trip-measurements.md).
 
 Trips use local Room storage. One GPS request supplies both the recorder and live display. Historical samples are saved before display
 updates can discard intermediate readings. Manual pauses and interruptions form separate segments. Missing GPS and poor positions do not
 form connected route lines. Distance is an estimate. Plane mode reports ground speed and the chosen altitude: above sea level or the GPS height.
 
-Trip maps use the native Android map, the Google Maps SDK, through `maps-compose`. See [ADR 0002](docs/adr/0002-use-google-maps-for-trip-maps.md).
+Trip maps use the native Android map, the Google Maps SDK, through `maps-compose`. See [ADR 0002](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0002-use-google-maps-for-trip-maps.md).
 Google receives the map area that you look at, the IP address, and technical data about the app. The app does not upload trip records.
 The map needs Google Play services and a Maps API key (see **Open and run**). Without the services, the map area shows a message
 and the Play services dialog. Map data can be unavailable; local trip measurements remain available.
 
-The [implementation plan](docs/tracking-implementation-plan.html) records scope and the commit sequence.
-The [HTML tracker](PROGRESS.html#tracking-verification) records builds, tests, native screenshots, and unverified cases.
+The [implementation plan](https://github.com/Glebenator/cvkegps/blob/main/docs/tracking-implementation-plan.html) records scope and the commit sequence.
+The [HTML tracker](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#tracking-verification) records builds, tests, native screenshots, and unverified cases.
 Physical-device accuracy, battery use, flight reception, long trips, Doze, Battery Saver, and API 29/37 device flows remain open.
 Offline map downloads, layers other than satellite, terrain, and traffic, automatic pause, sensor-based activity classification, GPX import, and elevation totals are not implemented.
 
@@ -141,8 +132,8 @@ Settings > Maps > **Map style** changes the look of the **Default** map type:
 - The current trip, saved trip, and replay maps use the style. Speed colours keep their outline: dark on a light map,
   white on a dark map.
 - The styles are JSON styles in `app/src/main/res/raw`. They use no map ID, so they add no cost. The decision is in
-  [ADR 0006](docs/adr/0006-map-styles-as-json-styles-without-a-map-id.md). Results and limits are in
-  [the report](PROGRESS.html#map-styles).
+  [ADR 0006](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0006-map-styles-as-json-styles-without-a-map-id.md). Results and limits are in
+  [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#map-styles).
 
 ## Map settings on 30 October 2026
 
@@ -159,7 +150,7 @@ Settings > Maps has these choices. **Start with** applies when a map opens. The 
 | Zoom with speed | On | Off keeps the zoom that the zoom buttons set. The current trip map starts at about 300 m across. |
 | Accuracy circle | On | Off hides the circle around the position. |
 
-The map theme still follows the app theme. Results and limits are in [the report](PROGRESS.html#map-settings).
+The map theme still follows the app theme. Results and limits are in [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#map-settings).
 
 ## Speed colours on saved routes on 30 October 2026
 
@@ -173,13 +164,13 @@ Saved trip and replay maps show the route in speed colours by default, from dark
 - **Choice.** The map type menu on a saved trip and Settings > Maps > Route colour on saved trips change between speed colours
   and one colour. The current trip map always uses one colour.
 
-The decision is in [ADR 0005](docs/adr/0005-colour-saved-routes-by-trip-speed-range.md). Results and limits are in
-[the report](PROGRESS.html#speed-colours).
+The decision is in [ADR 0005](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0005-colour-saved-routes-by-trip-speed-range.md). Results and limits are in
+[the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#speed-colours).
 
 ## Trip replay, step 1, on 28 October 2026
 
 A saved trip has a **Replay trip** button (the play icon in the top bar, and the trip menu). The replay screen is step 1 of
-concept D in [ADR 0004](docs/adr/0004-replay-as-a-player-with-charts.md): the glance view.
+concept D in [ADR 0004](https://github.com/Glebenator/cvkegps/blob/main/docs/adr/0004-replay-as-a-player-with-charts.md): the glance view.
 
 - **Map.** The route, the numbered moments, and the position at the playhead. A network position shows as a ring. In a GPS
   gap there is no position. The follow button follows the playhead.
@@ -251,7 +242,7 @@ The trip maps now use the Google Maps SDK in place of MapLibre and OpenStreetMap
 - **Recovery.** Without Google Play services, the map area explains the problem and opens the Play services dialog.
 
 MapLibre, OkHttp, and the OpenStreetMap caption are removed. Without a Maps API key, the map is empty: no map images,
-route, or markers, and no gestures. The camera, the buttons, and the map type still work. Results and limits are in [the report](PROGRESS.html#native-maps).
+route, or markers, and no gestures. The camera, the buttons, and the map type still work. Results and limits are in [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#native-maps).
 
 ## Landscape, foldables, and trip usability on 26 October 2026
 
@@ -297,12 +288,12 @@ emulator (API 36), all classes passed except one SkyMap test in the full run; Sk
 screen of a foldable in automated tests, an Android 16 Live Update, TalkBack, the lock screen, and battery use.
 After these tests, the notification text separator was corrected (`Â·` to `·`). The notification test now checks it and
 passed on the API 36 phone emulator.
-See [evidence and limits](PROGRESS.html#landscape-fold).
+See [evidence and limits](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#landscape-fold).
 
 ## Review fixes on 23 October 2026
 
 The user approved eight fixes from a UX and code review. Each fix is a separate local commit.
-See [the fix list](PROGRESS.html#ux-review) for status and evidence.
+See [the fix list](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#ux-review) for status and evidence.
 
 - The activity estimate uses an explicit null check instead of the `!!` operator. Behaviour does not change.
 - `ui/DisplayFormat.kt` formats speed, distance, and time from SI values in the user's locale. Screens and the notification use it.
@@ -325,7 +316,7 @@ so gaps are not joined. Points have latitude, longitude, and UTC time. The file 
 Android reports height above the WGS84 ellipsoid. Only the latest export stays in the private cache. Trip delete removes it.
 
 Debug build, Android lint, 15 calculation tests, and all 11 `TrackingDeviceTest` tests passed on the API 36 emulator.
-Opening the file in another app and a physical device remain unchecked. See [the report](PROGRESS.html#gpx-export).
+Opening the file in another app and a physical device remain unchecked. See [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#gpx-export).
 
 ## Screen transitions on 23 October 2026
 
@@ -336,7 +327,7 @@ The app shell paints the theme background, so no dark background shows during a 
 A device test uses the Compose test clock to check that each screen change ends within 350 ms. It failed with the
 Navigation 3 default, as expected. All 25 emulator device tests passed; one flaky setup wait passed on rerun.
 Motion on a physical device, the predictive Back gesture by hand, and right-to-left languages remain unchecked.
-See [the report](PROGRESS.html#transitions).
+See [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#transitions).
 
 ## Trip polish on 23 October 2026
 
@@ -348,7 +339,7 @@ While recording, the Android chronometer in the notification shows the time with
 
 Debug build, Android lint, 13 calculation tests, and all 9 `TrackingDeviceTest` tests passed on the API 36 emulator.
 Captures use simulated emulator locations. The notification on a physical device, TalkBack, other languages, and a
-release build remain unchecked. See [the report](PROGRESS.html#trip-polish).
+release build remain unchecked. See [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#trip-polish).
 
 ## UI polish on 22 October 2026
 
@@ -364,7 +355,7 @@ Distances below 1 km use metres. Durations show minutes and seconds, or hours an
 Debug build, test build, Android lint, 13 calculation tests, and 12 API 36 emulator checks passed.
 Checks cover recording, screen lock, notification controls, GPS recovery, map gestures, camera restoration,
 light and dark themes, rotation, and 200% text. These checks use simulated locations. Physical-device
-accuracy, battery use, TalkBack, and long trips remain unverified. See [the report](PROGRESS.html#ui-polish).
+accuracy, battery use, TalkBack, and long trips remain unverified. See [the report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#ui-polish).
 
 ## Current scope
 
@@ -604,7 +595,7 @@ Activity classification, GPS accuracy, battery use, and long trips still need ph
 Debug and unsigned release builds, debug and release lint, three calculation tests, and eight API 36 emulator tests passed.
 The emulator run used the working-tree APK, which includes the earlier GPS display changes. A separate selected-tree build
 passed without those display changes. The external check confirmed notification-permission recovery and saved points after
-force-stop. Screenshots use the tested APK. See [the tracking evidence](PROGRESS.html#tracking-verification) for its SHA-256,
+force-stop. Screenshots use the tested APK. See [the tracking evidence](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#tracking-verification) for its SHA-256,
 test scope, resolved failures, and untested cases. Field accuracy, power use, and long trips still need physical devices.
 
 ## GPS and battery rules
@@ -848,8 +839,8 @@ build. The Compose compiler version matches the Kotlin version supplied by AGP.
   Other window sizes, display-size settings, and languages still need checks.
 - Real-device GPS accuracy, TalkBack, frame timing, and battery use remain unmeasured.
 
-See [the progress report](PROGRESS.html#verification) for the dated evidence and
-[the location power research](docs/location-power-research.md) for the recording plan.
+See [the progress report](https://github.com/Glebenator/cvkegps/blob/main/PROGRESS.html#verification) for the dated evidence and
+[the location power research](https://github.com/Glebenator/cvkegps/blob/main/docs/location-power-research.md) for the recording plan.
 
 ## Future work
 

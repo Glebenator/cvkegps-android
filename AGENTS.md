@@ -1,11 +1,18 @@
-# Project rules
+# Project rules: CVKE GPS for Android
+
+CVKE GPS has three repositories. This repository is the native Android app.
+
+- [cvkegps](https://github.com/Glebenator/cvkegps): the product. Decisions (ADRs), the glossary, the shared
+  measurement rules, and the progress report. Product rules there apply to this app.
+- [cvkegps-android](https://github.com/Glebenator/cvkegps-android): this repository.
+- [cvkegps-ios](https://github.com/Glebenator/cvkegps-ios): the iOS app.
 
 ## Product
 
-- Build a native Android app for publication. An iOS app will follow.
+- Build a native Android app for publication. The iOS app in cvkegps-ios has the same product behaviour.
 - Use ASD-STE100 Simplified Technical English for instructions and documentation.
 - Implement only the agreed feature scope. Do not add inactive controls or simulated production data.
-- Keep Git local unless the user asks for a remote or a push.
+- Commit and push only when the user asks.
 
 ## Structure
 
@@ -55,27 +62,21 @@
 
 ## Progress report
 
-- Keep `PROGRESS.html` current after each completed feature, fix, milestone, or change to verification results.
-- Update it in the same change as the work it describes. Do not mark planned or untested work as complete.
-- Record the update date, app code baseline, completed scope, test evidence, known limits, and required and optional future work.
-- Add a dated change-history entry for meaningful progress. Preserve earlier milestone entries.
-- Use real app screenshots for UI changes. Store selected captures in `docs/progress/images/` with dated names.
-- Track these selected report images in Git. Keep raw captures and other generated output in the ignored `artifacts/` folder.
-- Caption each image with its date, app baseline, and relevant state. Identify simulated location data.
-- Keep code excerpts short and accurate. Link each excerpt to its source and update it when that code changes.
-- Keep the report usable without a network connection or build step. Use relative links to local assets.
-- Check the report layout and local links after report changes. Check narrow screens after layout changes.
+- The progress report is `PROGRESS.html` in the cvkegps repository. Its rules are in the `AGENTS.md` file there.
+- After a completed Android change, update the report in a separate change in cvkegps. Name the cvkegps-android commit.
+- The workflow `.github/workflows/android.yml` builds the app, runs lint and the unit tests, and builds the release
+  APK for each push to `main` and each pull request. Check its result before you report a change as verified.
 
 ## Agent skills
 
 ### Issue tracker
 
-Issues are in GitHub Issues for `Glebenator/cvkegps`. Use the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues for the Android app are in GitHub Issues for `Glebenator/cvkegps-android`. Use the `gh` CLI. A feature that both apps need has a parent issue in `Glebenator/cvkegps` and one sub-issue for each app. See `docs/agents/issue-tracker.md` in the cvkegps repository.
 
 ### Triage labels
 
-Use the five default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+Use the five default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md` in the cvkegps repository.
 
 ### Domain docs
 
-Single-context: one `GLOSSARY.md` and one `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+The glossary (`GLOSSARY.md`) and the decisions (`docs/adr/`) are in the cvkegps repository. See `docs/agents/domain.md` there.
