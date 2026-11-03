@@ -837,7 +837,7 @@ See [the progress report](https://github.com/Glebenator/cvkegps/blob/main/PROGRE
 Follow `AGENTS.md` for architecture, design, privacy, and test requirements.
 Route recording now uses local storage and a foreground service. Field validation and the publication requirements remain open.
 
-Before publication, select the final application ID and launcher artwork, configure release
-signing outside Git, and complete the store and privacy requirements. Declare the Maps SDK data in the Play Data
-safety form, and restrict the release Maps API key to the release ID and the Play App Signing certificate. The current
-`com.example.cvkegps` ID is a development ID. The release APK is unsigned.
+The application ID is `com.cvke.gps`, the launcher icon is the speed dial, and release signing uses an upload key
+from outside Git (README, Release build). Before publication, complete the store and privacy requirements. Declare the
+Maps SDK data in the Play Data safety form, and restrict the release Maps API key to `com.cvke.gps` and the upload and
+Play App Signing certificates.
