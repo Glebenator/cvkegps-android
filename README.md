@@ -16,7 +16,8 @@ CVKE GPS has three repositories:
 
 ## Status
 
-- **Development build.** The app is not published. The application ID `com.example.cvkegps` is a development ID.
+- **Before the first release.** The app is not published yet. The application ID is `com.cvke.gps`. The debug build
+  has the ID `com.cvke.gps.debug` and the name CVKE GPS Debug, so it can be on the same phone as the Play build.
 - **CI.** The badge above shows the result of the newest run on `main`. Select it to see all runs.
 - **Verification.** The device tests run on an emulator with simulated GPS locations. GPS accuracy, battery use, and
   TalkBack are not yet checked on a real phone. The progress report has the dated test results and the known limits.
@@ -33,6 +34,7 @@ The workflow [`android.yml`](.github/workflows/android.yml) runs for each push t
 | Lint, warnings as errors | `:app:lintDebug` | Yes |
 | Unit tests | `:app:testDebugUnitTest` | Yes |
 | Release APK, minified and unsigned | `:app:assembleRelease` | Yes |
+| Release bundle for Google Play, unsigned | `:app:bundleRelease` | Yes |
 | Device tests on an emulator | `:app:connectedDebugAndroidTest` | Not yet. Run them locally. |
 
 The lint and test reports are in the `android-reports` artifact of each run.
@@ -71,8 +73,9 @@ locations.
 2. Use JDK 21 or later for Gradle. The wrapper uses Gradle 9.6.0 and Android Gradle Plugin 9.4.1.
 3. Install Android SDK platform 37. The minimum supported API is 29.
 4. Add `MAPS_API_KEY=<your key>` to `local.properties`. Get the key from a Google Cloud project with the Maps SDK for
-   Android turned on. Restrict it to that API and to the app's application ID and signing certificate. Git ignores
-   `local.properties`. Without a key, the app builds and runs, but the map is empty.
+   Android turned on. Restrict it to that API and to each application ID with its signing certificate SHA-1:
+   `com.cvke.gps.debug` with your debug certificate, and `com.cvke.gps` with the upload certificate and the Play app
+   signing certificate. Git ignores `local.properties`. Without a key, the app builds and runs, but the map is empty.
 5. Run the `app` configuration on a device or an emulator with Google Play services.
 6. Select **Allow precise location**, then allow location while using the app.
 
@@ -83,6 +86,41 @@ From a terminal:
 ```
 
 On Windows, use `.\gradlew.bat`.
+
+## Release build
+
+Google Play needs an Android App Bundle (AAB) signed with an upload key. Google Play keeps the app signing key
+(Play App Signing) and signs the APKs that it delivers.
+
+1. Make an upload key once. Keep it outside this folder, and keep a backup copy and the passwords in a safe place:
+
+   ```sh
+   keytool -genkeypair -v -keystore ~/keys/cvkegps-upload.jks -alias upload -keyalg RSA -keysize 4096 -validity 10000
+   ```
+
+2. Make `keystore.properties` in this folder. Git ignores it.
+
+   ```properties
+   storeFile=/Users/you/keys/cvkegps-upload.jks
+   storePassword=...
+   keyAlias=upload
+   keyPassword=...
+   ```
+
+   You can also use the environment variables `CVKE_UPLOAD_STORE_FILE`, `CVKE_UPLOAD_STORE_PASSWORD`,
+   `CVKE_UPLOAD_KEY_ALIAS`, and `CVKE_UPLOAD_KEY_PASSWORD`. They have priority over the file.
+3. Increase `versionCode` in `app/build.gradle.kts` for each upload.
+4. Build the bundle, with `MAPS_API_KEY` set to the release key:
+
+   ```sh
+   ./gradlew :app:bundleRelease
+   ```
+
+   The bundle is `app/build/outputs/bundle/release/app-release.aab`. Upload it to a testing track in Play Console.
+5. In Play Console, open **Test and release > App integrity**. Add the SHA-1 of the upload certificate and of the app
+   signing certificate to the Maps API key.
+
+Without an upload key, `bundleRelease` and `assembleRelease` make unsigned output. CI builds them this way.
 
 ## Tests
 
@@ -122,7 +160,7 @@ Emulator results are functional evidence only. GPS accuracy, battery use, and pe
 ## Project structure
 
 ```text
-app/src/main/java/com/example/cvkegps/
+app/src/main/java/com/cvke/gps/
   location/      GPS and GNSS sources, the fix rules, and the compass
   tracking/      Trip recorder, foreground service, Room database, maps, replay, and the trip screens
   ui/            Navigation, the Speed tab, GPS details, Settings, display format, and the theme

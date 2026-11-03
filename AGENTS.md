@@ -58,7 +58,8 @@ CVKE GPS has three repositories. This repository is the native Android app.
 - Check the release build before release. Inspect light mode, dark mode, and large text after layout changes.
 - Report what was tested, what failed, and what still needs a real device.
 - Keep generated output, local SDK paths, signing keys, IDE state, and design exports out of Git.
-- Before publication, replace the development application ID, add release signing, and complete store and privacy requirements.
+- The application ID is `com.cvke.gps`. Do not change it: Google Play keeps it for the life of the app.
+- Keep the upload key and `keystore.properties` out of Git. Increase `versionCode` for each upload to Google Play.
 
 ## Progress report
 

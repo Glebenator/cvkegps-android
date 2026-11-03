@@ -14,16 +14,27 @@ val mapsApiKey: String = providers.gradleProperty("MAPS_API_KEY").orElse(
         Properties().apply { load(text.reader()) }.getProperty("MAPS_API_KEY", "")
     }).getOrElse("").ifBlank { "NO_MAPS_API_KEY" }
 
+// The upload key stays out of Git. Set it in keystore.properties (Git ignores this file) or in CVKE_UPLOAD_*
+// environment variables. See README.md. Without an upload key, the release build is unsigned.
+val keystoreProperties = providers.fileContents(rootProject.layout.projectDirectory.file("keystore.properties")).asText
+    .map { text -> Properties().apply { load(text.reader()) } }
+
+fun uploadKeySetting(property: String, variable: String): String? = providers.environmentVariable(variable)
+    .orElse(keystoreProperties.map { it.getProperty(property, "") }).orNull?.takeIf { it.isNotBlank() }
+
+val uploadStoreFile = uploadKeySetting("storeFile", "CVKE_UPLOAD_STORE_FILE")
+
 android {
-    namespace = "com.example.cvkegps"
+    namespace = "com.cvke.gps"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.cvkegps"
+        applicationId = "com.cvke.gps"
         minSdk = 29
         targetSdk = 37
+        // Increase versionCode for each upload to Google Play. Play refuses a code that it already has.
         versionCode = 1
         versionName = "1.0"
 
@@ -33,8 +44,26 @@ android {
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
+    signingConfigs {
+        if (uploadStoreFile != null) {
+            create("upload") {
+                fun required(property: String, variable: String) = uploadKeySetting(property, variable)
+                    ?: error("Set $property in keystore.properties or $variable for the upload key.")
+                storeFile = rootProject.file(uploadStoreFile)
+                storePassword = required("storePassword", "CVKE_UPLOAD_STORE_PASSWORD")
+                keyAlias = required("keyAlias", "CVKE_UPLOAD_KEY_ALIAS")
+                keyPassword = required("keyPassword", "CVKE_UPLOAD_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            // A debug build and the Play build can be on the same phone. They have separate trips and settings.
+            applicationIdSuffix = ".debug"
+        }
         release {
+            signingConfig = signingConfigs.findByName("upload")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))

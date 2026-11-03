@@ -1,4 +1,5 @@
-# Builds the Android app, runs lint and the unit tests, compiles the device tests, and builds the release APK.
+# Builds the Android app, runs lint and the unit tests, compiles the device tests, and builds the release APK and the
+# release bundle for Google Play. CI has no upload key, so the release outputs are unsigned.
 # The device tests need an emulator and are not in this workflow yet.
 name: Android
 
@@ -31,6 +32,7 @@ jobs:
         run: >
           ./gradlew --stacktrace
           :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug :app:testDebugUnitTest :app:assembleRelease
+          :app:bundleRelease
       - name: Upload the lint and test reports
         if: always()
         uses: actions/upload-artifact@v4

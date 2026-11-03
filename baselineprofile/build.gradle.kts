@@ -5,7 +5,7 @@ plugins {
 
 // Generates the app's Baseline Profile and measures cold start. Run it on a device, not in unit tests.
 android {
-    namespace = "com.example.cvkegps.baselineprofile"
+    namespace = "com.cvke.gps.baselineprofile"
     compileSdk {
         version = release(37)
     }

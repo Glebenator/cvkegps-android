@@ -17,7 +17,7 @@ if not args.serial.startswith('emulator-'):
     parser.error('Use a dedicated emulator. This check clears app data.')
 out = Path(args.output).resolve()
 out.mkdir(parents=True, exist_ok=True)
-package = 'com.example.cvkegps'
+package = 'com.cvke.gps.debug'
 
 def adb(*command, binary=False):
     result = subprocess.check_output([args.adb, '-s', args.serial, *command])
